@@ -1,10 +1,46 @@
+import json
 import tkinter as tk
 import ttkbootstrap as ttk
 
 # Window
-window = ttk.Window(themename='darkly')
+style = ttk.Style()
+window = style.master
 window.title('Calculator')
-window.geometry('400x650')
+window.geometry('400x600')
+icon = tk.PhotoImage(file='icon.png')
+window.iconphoto(True, icon)
+
+#Themes
+def themesetter(theme, equaltheme, buttonstheme):
+    style = ttk.Style(theme=theme)
+    style.configure('.', font=('Calibri', 24))
+    but_list = (but_plus, but_0, but_000, but_1, but_2, but_3, but_4, but_5, but_6, but_7, but_8, but_9, but_divide, but_percent, but_minus, but_product, but_c, but_delete, but_dot)
+    for button in but_list:
+        button.configure(bootstyle=buttonstheme)
+    but_equals.configure(bootstyle=equaltheme)
+    theme_data = {
+        'general_theme' : theme,
+        'equal_theme' : equaltheme,
+        'buttons_theme' : buttonstheme
+    }
+    with open('settings.json', 'w') as js:
+        json.dump(theme_data, js)
+
+menu = ttk.Menu(window)
+submen1 = ttk.Menu(menu, tearoff=False)
+dark_themes = ttk.Menu(submen1, tearoff=False)
+dark_themes.add_command(label='Dark Blue', command=lambda : themesetter('superhero', 'primary', 'secondary'))
+dark_themes.add_command(label='Black', command=lambda : themesetter('darkly', 'success', 'secondary'))
+dark_themes.add_command(label='Purple', command=lambda : themesetter('vapor', 'primary', 'dark'))
+dark_themes.add_command(label='Solar', command=lambda : themesetter('solar', 'primary', 'success'))
+light_themes = ttk.Menu(submen1, tearoff=False)
+light_themes.add_command(label='Lumen', command=lambda : themesetter('lumen', 'primary', 'light'))
+light_themes.add_command(label='Morph', command=lambda : themesetter('morph', 'primary', 'light'))
+light_themes.add_command(label='Mint', command=lambda : themesetter('minty', 'dark', 'primary'))
+submen1.add_cascade(label='Dark', menu=dark_themes)
+submen1.add_cascade(label='Light', menu=light_themes)
+menu.add_cascade(label='Themes', menu=submen1)
+
 
 # Output
 output_frame = ttk.Frame(window)
@@ -120,7 +156,7 @@ def f_c():
     val_label_2.set('0')
 
 def f_equals():
-    global math_cup, clear_result
+    global math_cup, clear_result, style
     val_1 = val_label_1.get()
     val_2 = val_label_2.get()
     if val_2 == '0' and math_cup[-1] in '+-x÷':
@@ -142,72 +178,69 @@ input_frame.place(x=0, y=195, relwidth=1, relheight=0.7)
 input_frame.columnconfigure((0, 1, 2, 3), weight=1)
 input_frame.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7 ,8), weight=1)
 
-s = ttk.Style()
-s.configure('.', font=('Calibri', 24))
-
 # Button definitions
-but_percent = ttk.Button(input_frame, text='%', bootstyle='secondary', command=lambda: f_operation('%'))
+but_percent = ttk.Button(input_frame, text='%', command=lambda: f_operation('%'))
 but_percent.grid(row=0, column=0, sticky='nesw', padx=5, pady=5)
 
-but_divide = ttk.Button(input_frame, text='÷', bootstyle='secondary', command=lambda: f_operation('÷'))
+but_divide = ttk.Button(input_frame, text='÷', command=lambda: f_operation('÷'))
 but_divide.grid(row=0, column=1, sticky='nesw', padx=5, pady=5)
 
-but_c = ttk.Button(input_frame, text='C', bootstyle='secondary', command=f_c)
+but_c = ttk.Button(input_frame, text='C', command=f_c)
 but_c.grid(row=0, column=2, sticky='nesw', padx=5, pady=5)
 
-but_delete = ttk.Button(input_frame, text='<-', bootstyle='secondary', command=delete_one)
+but_delete = ttk.Button(input_frame, text='<-', command=delete_one)
 but_delete.grid(row=0, column=3, sticky='nesw', padx=5, pady=5)
 
 # Row 1
-but_7 = ttk.Button(input_frame, text='7', bootstyle='secondary', command=lambda: f_but_numbers('7'))
+but_7 = ttk.Button(input_frame, text='7', command=lambda: f_but_numbers('7'))
 but_7.grid(row=1, column=0, sticky='nesw', padx=5, pady=5)
 
-but_8 = ttk.Button(input_frame, text='8', bootstyle='secondary', command=lambda: f_but_numbers('8'))
+but_8 = ttk.Button(input_frame, text='8', command=lambda: f_but_numbers('8'))
 but_8.grid(row=1, column=1, sticky='nesw', padx=5, pady=5)
 
-but_9 = ttk.Button(input_frame, text='9', bootstyle='secondary', command=lambda: f_but_numbers('9'))
+but_9 = ttk.Button(input_frame, text='9', command=lambda: f_but_numbers('9'))
 but_9.grid(row=1, column=2, sticky='nesw', padx=5, pady=5)
 
-but_product = ttk.Button(input_frame, text='x', bootstyle='secondary', command=lambda: f_operation('x'))
+but_product = ttk.Button(input_frame, text='x', command=lambda: f_operation('x'))
 but_product.grid(row=1, column=3, sticky='nesw', padx=5, pady=5)
 
 # Row 2
-but_4 = ttk.Button(input_frame, text='4', bootstyle='secondary', command=lambda: f_but_numbers('4'))
+but_4 = ttk.Button(input_frame, text='4', command=lambda: f_but_numbers('4'))
 but_4.grid(row=2, column=0, sticky='nesw', padx=5, pady=5)
 
-but_5 = ttk.Button(input_frame, text='5', bootstyle='secondary', command=lambda: f_but_numbers('5'))
+but_5 = ttk.Button(input_frame, text='5', command=lambda: f_but_numbers('5'))
 but_5.grid(row=2, column=1, sticky='nesw', padx=5, pady=5)
 
-but_6 = ttk.Button(input_frame, text='6', bootstyle='secondary', command=lambda: f_but_numbers('6'))
+but_6 = ttk.Button(input_frame, text='6', command=lambda: f_but_numbers('6'))
 but_6.grid(row=2, column=2, sticky='nesw', padx=5, pady=5)
 
-but_minus = ttk.Button(input_frame, text='-', bootstyle='secondary', command=lambda: f_operation('-'))
+but_minus = ttk.Button(input_frame, text='-', command=lambda: f_operation('-'))
 but_minus.grid(row=2, column=3, sticky='nesw', padx=5, pady=5)
 
 # Row 3
-but_1 = ttk.Button(input_frame, text='1', bootstyle='secondary', command=lambda: f_but_numbers('1'))
+but_1 = ttk.Button(input_frame, text='1', command=lambda: f_but_numbers('1'))
 but_1.grid(row=3, column=0, sticky='nesw', padx=5, pady=5)
 
-but_2 = ttk.Button(input_frame, text='2', bootstyle='secondary', command=lambda: f_but_numbers('2'))
+but_2 = ttk.Button(input_frame, text='2', command=lambda: f_but_numbers('2'))
 but_2.grid(row=3, column=1, sticky='nesw', padx=5, pady=5)
 
-but_3 = ttk.Button(input_frame, text='3', bootstyle='secondary', command=lambda: f_but_numbers('3'))
+but_3 = ttk.Button(input_frame, text='3', command=lambda: f_but_numbers('3'))
 but_3.grid(row=3, column=2, sticky='nesw', padx=5, pady=5)
 
-but_plus = ttk.Button(input_frame, text='+', bootstyle='secondary', command=lambda: f_operation('+'))
+but_plus = ttk.Button(input_frame, text='+', command=lambda: f_operation('+'))
 but_plus.grid(row=3, column=3, sticky='nesw', padx=5, pady=5)
 
 # Row 4
-but_000 = ttk.Button(input_frame, text='000', bootstyle='secondary', command=lambda: f_but_numbers('000'))
+but_000 = ttk.Button(input_frame, text='000', command=lambda: f_but_numbers('000'))
 but_000.grid(row=4, column=0, sticky='nesw', padx=5, pady=5)
 
-but_0 = ttk.Button(input_frame, text='0', bootstyle='secondary', command=lambda: f_but_numbers('0'))
+but_0 = ttk.Button(input_frame, text='0', command=lambda: f_but_numbers('0'))
 but_0.grid(row=4, column=1, sticky='nesw', padx=5, pady=5)
 
-but_dot = ttk.Button(input_frame, text='.', bootstyle='secondary', command=f_dot)
+but_dot = ttk.Button(input_frame, text='.', command=f_dot)
 but_dot.grid(row=4, column=2, sticky='nesw', padx=5, pady=5)
 
-but_equals = ttk.Button(input_frame, text='=', bootstyle='success', command=f_equals)
+but_equals = ttk.Button(input_frame, text='=', command=f_equals)
 but_equals.grid(row=4, column=3, sticky='nesw', padx=5, pady=5)
 
 # Adding Keyboard Bindings
@@ -241,5 +274,11 @@ def key_press(event):
 # Binding keys to the window
 window.bind('<KeyPress>', key_press)
 
+#set current theme
+with open('settings.json', 'r') as js:
+    current_theme = json.load(js)
+themesetter(current_theme['general_theme'],current_theme['equal_theme'],current_theme['buttons_theme'], )
+
 # Run the window
+window.configure(menu=menu)
 window.mainloop()
